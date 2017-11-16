@@ -1,0 +1,23 @@
+server:
+  port: 7032
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:7030/eureka/
+
+spring:
+  application:
+    name: platform-sys
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: com.shawn.sys.util.ImprovedNamingStrategy
+    show-sql: true
+#  datasource:
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+#    url: jdbc:oracle:thin:@rac-scan.lettydomain.com:1521/pengrun
+#    username: devmmtsys01
+#    password: devmmtsys01

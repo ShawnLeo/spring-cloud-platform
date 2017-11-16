@@ -1,0 +1,5 @@
+rootProject.name = 'platform'
+
+include 'gateway'
+include 'eureka'
+include 'sys'

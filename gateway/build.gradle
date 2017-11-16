@@ -1,0 +1,48 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.6.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+ext {
+	springCloudVersion = 'Dalston.SR3'
+}
+
+dependencies {
+	compile 'com.alibaba:fastjson:1.2.34'
+	compile('com.google.guava:guava:23.0')
+	compile('io.jsonwebtoken:jjwt:0.7.0')
+	compile('org.springframework.cloud:spring-cloud-starter-eureka')
+	compile('org.springframework.cloud:spring-cloud-starter-security')
+	compile('org.springframework.cloud:spring-cloud-starter-zuul')
+	compile 'com.netflix.netflix-commons:netflix-commons-util:0.1.1'
+
+	compile 'org.springframework.boot:spring-boot-starter-redis:1.4.1.RELEASE'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}

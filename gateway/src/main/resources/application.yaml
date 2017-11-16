@@ -1,0 +1,11 @@
+server:
+  port: 7031
+spring:
+  application:
+    name: platform-gateway
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:7030/eureka/
+zuul:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
