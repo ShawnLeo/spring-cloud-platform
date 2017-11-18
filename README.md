@@ -1,4 +1,4 @@
-#Spring Cloud
+#Spring Cloud Platform
 
    ##Project Description
         - eureka：Service discovery
