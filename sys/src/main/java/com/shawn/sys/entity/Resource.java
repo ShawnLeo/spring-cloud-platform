@@ -18,8 +18,9 @@ import static javax.persistence.CascadeType.REFRESH;
  * Created by wanglu-jf on 17/9/6.
  */
 @Entity
-@Table(name = Tables.RESOURCE,
-        indexes = {@Index(name = "IDX_RESOURCE_NAMEPARENTIDPATH",columnList = "parent_id,name,path")})
+@Table(name = Tables.RESOURCE
+//        ,indexes = {@Index(name = "IDX_RESOURCE_NAMEPARENTIDPATH",columnList = "parent_id,name,path")}
+        )
 public class Resource extends AbstractResource {
 
     private static final long serialVersionUID = -1639299970159239350L;

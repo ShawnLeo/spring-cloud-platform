@@ -29,13 +29,16 @@ ext {
 dependencies {
 	compile 'com.alibaba:fastjson:1.2.34'
 	compile('com.google.guava:guava:23.0')
+	compile('com.netflix.netflix-commons:netflix-commons-util:0.1.1')
 	compile('io.jsonwebtoken:jjwt:0.7.0')
 	compile('org.springframework.cloud:spring-cloud-starter-eureka')
 	compile('org.springframework.cloud:spring-cloud-starter-security')
 	compile('org.springframework.cloud:spring-cloud-starter-zuul')
-	compile 'com.netflix.netflix-commons:netflix-commons-util:0.1.1'
 
-	compile 'org.springframework.boot:spring-boot-starter-redis:1.4.1.RELEASE'
+	compile('org.springframework.cloud:spring-cloud-starter-feign')
+	compile('org.springframework.cloud:spring-cloud-starter-hystrix')
+
+	compile('org.springframework.boot:spring-boot-starter-redis:1.4.1.RELEASE')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 

@@ -15,8 +15,10 @@ public class AbstractUserAuth implements Serializable {
 
     private static final String SEQUENCE = Tables.USERAUTH + Schema.SEQ_SUFFIX;
 
-    @SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//    @SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//    @Id
+    @GeneratedValue
     @Id
     @Column(name = "ID",length = 40,unique = true,nullable = false)
     protected Long id;

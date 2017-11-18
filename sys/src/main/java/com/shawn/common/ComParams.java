@@ -1,14 +1,5 @@
 package com.shawn.common;
 
-/**
- * <B>系统名称：</B>美美金融平台<BR>
- * <B>模块名称：</B>平台公共模块<BR>
- * <B>中文类名：</B>请求参数对象<BR>
- * <B>概要说明：公共参数</B><BR>
- *
- * @author 北京鹏润美美科技有限公司
- * @since 2017年07月28日 16时38分
- */
 public class ComParams {
 
     // 请求应用代码 如: mmt-finance-ios

@@ -24,21 +24,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-
-/**
- * <B>系统名称：</B>美美金融平台<BR>
- * <B>模块名称：</B>用户管理模块<BR>
- * <B>概要说明：</B>
- * 用户保存接口<BR>
- * 用户修改接口<BR>
- * 用户密码修改接口<BR>
- * 用户密码重置接口<BR>
- * 用户账号锁定、解锁接口<BR>
- * 用户分页接口<BR>
- *
- * @author 北京鹏润美美科技有限公司（田海龙）
- * @since 2017年11月2日
- */
 @RestController
 @RequestMapping("/user")
 public class UserController {

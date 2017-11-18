@@ -11,8 +11,10 @@ public abstract class AbstractUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String SEQUENCE = Tables.USER + Schema.SEQ_SUFFIX;
 
-	@SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//	@SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//	@Id
+	@GeneratedValue
 	@Id
 	@Column(name = "ID",length = 40,unique = true,nullable = false)
 	protected Long id;

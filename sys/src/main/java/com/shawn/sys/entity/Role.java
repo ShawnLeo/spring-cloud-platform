@@ -14,7 +14,9 @@ import java.util.Set;
  * Created by wanglu-jf on 17/9/6.
  */
 @Entity
-@Table(name = Tables.ROLE,indexes = {@Index(name = "IDX_ROLE_NAME",columnList = "ROLE_CODE"),@Index(name = "IDX_ROLE_REMARKS",columnList = "remarks")})
+@Table(name = Tables.ROLE
+//        ,indexes = {@Index(name = "IDX_ROLE_NAME",columnList = "ROLE_CODE"),@Index(name = "IDX_ROLE_REMARKS",columnList = "remarks")}
+        )
 public class Role extends AbstractRole implements Serializable {
 
     private static final long serialVersionUID = 5701326659682617666L;

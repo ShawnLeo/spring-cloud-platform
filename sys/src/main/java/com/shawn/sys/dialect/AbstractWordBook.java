@@ -14,8 +14,10 @@ public abstract class AbstractWordBook implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String SEQUENCE = Tables.WORDBOOK + Schema.SEQ_SUFFIX;
 
-	@SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//	@SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+//	@Id
+	@GeneratedValue
 	@Id
 	protected Long id;
 

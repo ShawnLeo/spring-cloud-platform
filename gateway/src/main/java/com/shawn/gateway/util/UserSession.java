@@ -3,15 +3,6 @@ package com.shawn.gateway.util;
 import java.io.Serializable;
 import java.util.Collection;
 
-/**
- * <B>系统名称：</B>美美金融平台<BR>
- * <B>模块名称：</B>模块<BR>
- * <B>中文类名：</B><BR>
- * <B>概要说明：</B><BR>
- *
- * @author 北京鹏润美美科技有限公司
- * @since 2017年07月24日 18时45分
- */
 public final class UserSession implements Serializable {
 
     private static final long serialVersionUID = -2970205842358364430L;

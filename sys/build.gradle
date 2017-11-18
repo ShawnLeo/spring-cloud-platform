@@ -61,7 +61,7 @@ dependencies {
 	compile "com.alibaba:fastjson:1.2.38"
 //	compile('com.ctrip.framework.apollo:apollo-client:0.8.0')
 	compile('com.google.guava:guava:23.0')
-	compile('com.meimeitech:mmt-common:1.0.0-SNAPSHOT')
+//	compile('com.meimeitech:mmt-common:1.0.0-SNAPSHOT')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-mobile')
@@ -72,5 +72,6 @@ dependencies {
 
 	compile('io.jsonwebtoken:jjwt:0.7.0')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	runtime('com.oracle:ojdbc14:10.2')
+//	runtime('com.oracle:ojdbc14:10.2')
+	runtime('mysql:mysql-connector-java')
 }

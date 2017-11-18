@@ -21,3 +21,8 @@ spring:
 #    url: jdbc:oracle:thin:@rac-scan.lettydomain.com:1521/pengrun
 #    username: devmmtsys01
 #    password: devmmtsys01
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/sys
+    username: root
+    password:

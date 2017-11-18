@@ -3,9 +3,17 @@ server:
 spring:
   application:
     name: platform-gateway
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:7030/eureka/
 zuul:
   ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+
+url:
+  filter:
+    permission: /** = USER

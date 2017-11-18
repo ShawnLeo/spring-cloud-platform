@@ -1,14 +1,5 @@
 package com.shawn.common;
 
-/**
- * <B>系统名称：</B>美美金融平台<BR>
- * <B>模块名称：</B>平台公共模块<BR>
- * <B>中文类名：</B>返回码<BR>
- * <B>概要说明：</B><BR>
- *
- * @author 北京鹏润美美科技有限公司
- * @since 2017年6月30日
- */
 public enum RetCode {
 
     SUCCESS("0", "success"),ACCESSDENY("-1", "访问拒绝"), VALIDATEERROR("-2", "验证错误"), INTERNALEXCEP("-9", "内部异常"), TIMEOUT("-100", "超时"), NOLOGIN("-101", "请登录"), LOGINED("-102",
