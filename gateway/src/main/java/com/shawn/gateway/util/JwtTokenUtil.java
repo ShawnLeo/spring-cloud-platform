@@ -68,7 +68,7 @@ public class JwtTokenUtil implements Serializable {
         // redis 中获取
         if (redisTemplate.opsForHash().hasKey(Constants.KEY_HASH_TOKEN, token)) {
             try {
-                BeanUtils.copyProperties(session, redisTemplate.opsForHash().get(Constants.KEY_HASH_TOKEN, token));
+                BeanUtils.copyProperties(redisTemplate.opsForHash().get(Constants.KEY_HASH_TOKEN, token),session);
             } catch (Exception e) {
                 logger.info("用户会话转换异常！");
                 e.printStackTrace();
