@@ -7,9 +7,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
-
-//	List<Resource> findByPattern(String text);
-
     /**
      * 根据资源名称及节点id,url查询资源菜单
      * @param name
@@ -34,4 +31,8 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     List<Resource> findByParentId(@Param("parentId") String parentId);
 
     List<Resource> findByPathIsNotNullOrderByIdDesc();
+
+    List<Resource> findByModTypeAndParentId(String modType, String system);
+
+    Resource findByModTypeAndName(String modType, String system);
 }

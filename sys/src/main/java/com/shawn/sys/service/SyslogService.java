@@ -57,7 +57,7 @@ public class SyslogService {
         Specification<SysLog> specification = new Specification<SysLog>() {
             @Override
             public Predicate toPredicate(Root<SysLog> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<Predicate>();
+                List<Predicate> predicates = new ArrayList<>();
                 //参数非空判断。不为空则加此条件
                 if(log != null) {
                     if (StringUtils.isNotEmpty(log.getLogModule())) {

@@ -71,25 +71,13 @@ public class Role extends AbstractRole implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date updateTime;
 
-//    @ManyToMany(targetEntity = User.class,cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = Tables.USERROLE,
-//            joinColumns = {@JoinColumn(name = Columns.USERROLE_ROLEID)},
-//            inverseJoinColumns = {@JoinColumn(name = Columns.USERROLE_USERID)}
-//    )
-//    private Set<User> users = new HashSet<User>();
-
-
-    @ManyToMany(fetch = FetchType.LAZY/*, cascade = { REFRESH, DETACH }*/)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = Tables.ROLERESOURCE,
             joinColumns = @JoinColumn(name = Columns.ROLERESOURCE_ROLEID) ,
             inverseJoinColumns = @JoinColumn(name = Columns.ROLERESOURCE_RESOURCEID)
     )
-//    @JsonIgnore
-//    @Lazy(value = false)
-//    @Cascade(value = CascadeType.SAVE_UPDATE)
-    private Set<Resource> resources = new HashSet<Resource>();
+    private Set<Resource> resources = new HashSet<>();
 
     /**
      * 当前页

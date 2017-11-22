@@ -8,9 +8,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by wanglu-jf on 17/9/12.
- */
 public class RoleVO implements Serializable {
 
     private static final long serialVersionUID = -6424139059745921768L;
@@ -33,7 +30,7 @@ public class RoleVO implements Serializable {
      * 排列顺序
      */
 //    @DecimalMax(value = "10",message = "角色排列顺序有误")
-    public String dispOrder = "999";
+    private String dispOrder = "999";
 
     /**
      * 备注说明
@@ -44,31 +41,14 @@ public class RoleVO implements Serializable {
     /**
      * 当前页
      */
-    public int page = 0;
+    private int page = 0;
 
     /**
      * 每页条数
      */
-    public int size = 10;
+    private int size = 10;
 
-//    /**
-//     *创建时间
-//     */
-//    @Future
-//    private Date createTime = new Date();
-//
-//    /**
-//     *更新者
-//     */
-//    private String updateBy;
-//
-//    /**
-//     *更新时间
-//     */
-//    @Future
-//    private Date updateTime;
-
-    private Set<Resource> resources = new HashSet<Resource>();
+    private Set<Resource> resources = new HashSet<>();
 
     private String[] roleResources=null;
 
@@ -152,7 +132,7 @@ public class RoleVO implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("RoleVO{");
+        final StringBuilder sb = new StringBuilder("RoleVO{");
         sb.append(", id='").append(id).append('\'');
         sb.append(", roleCode='").append(roleCode).append('\'');
         sb.append(", dispOrder='").append(dispOrder).append('\'');
@@ -163,3 +143,4 @@ public class RoleVO implements Serializable {
         return sb.toString();
     }
 }
+

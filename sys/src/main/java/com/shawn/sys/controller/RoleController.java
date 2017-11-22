@@ -129,10 +129,6 @@ public class RoleController {
 	 */
 	@RequestMapping("/set")
 	public Response setPermissions(@RequestBody RoleVO roleVO) throws ValidationException{
-//		logger.info("id:{}",roleVO.getId());
-//		if(result.hasErrors()){
-//			throw new ValidationException(RetCode.VALIDATEERROR.getCode(), ValidateUtils.addError(result));
-//		}
 		this.roleService.setPermissionsByRoleId(roleVO);
         notifyGatewayRefresh();
 		return Response.success(null);
@@ -144,18 +140,24 @@ public class RoleController {
      *
      * @throws ValidationException
      */
-	private void notifyGatewayRefresh() throws ValidationException {
+	/**
+	 *
+	 * 通知每一个网管刷新资源权限列表
+	 *
+	 *
+	 */
+	private void notifyGatewayRefresh() {
 		List<ServiceInstance> gatewayList  = discoveryClient.getInstances("platform-gateway");
 		for(ServiceInstance serviceInstance : gatewayList){
 			URI uri = serviceInstance.getUri();
-			logger.info("刷新网管地址[{}]资源权限缓存.",uri.toString());
+			logger.info("刷新网关地址[{}]资源权限缓存.",uri);
 			try(CloseableHttpClient httpClient = HttpClients.createDefault()) {
-                HttpGet get = new HttpGet(serviceInstance.getUri()+"/permissions/refresh");
+				HttpGet get = new HttpGet(serviceInstance.getUri()+"/permissions/refresh");
 				httpClient.execute(get);
 			} catch (IOException e) {
-				logger.warn("刷新网管地址[{}]资源权限缓存失败：{}",uri.toString(),e);
+				logger.warn("刷新网关地址[{}]资源权限缓存失败：{}",uri.toString(),e);
 			}
-        }
+		}
 
 	}
 

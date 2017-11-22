@@ -4,6 +4,7 @@ import com.shawn.common.ComParams;
 import com.shawn.common.RetCode;
 import com.shawn.common.Response;
 import com.shawn.sys.entity.Resource;
+import com.shawn.sys.exception.EditDomainException;
 import com.shawn.sys.exception.ValidationException;
 import com.shawn.sys.service.ResourceService;
 import com.shawn.sys.util.ValidateUtils;
@@ -15,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * Created by wanglu-jf on 17/9/14.
- */
 @RestController
 @RequestMapping("/resource")
 public class ResourceController {
@@ -40,8 +38,17 @@ public class ResourceController {
      * @return
      */
     @RequestMapping("/get/{id}")
-    public Response get(@PathVariable("id") Long id) throws Exception{
+    public Response get(@PathVariable("id") Long id) throws EditDomainException{
         return Response.success(resourceService.findById(id));
+    }
+
+    /**
+     * 根据系统编号获取 菜单
+     * @return
+     */
+    @RequestMapping("/menu/list")
+    public Response menuList(@RequestParam("system") String system) throws EditDomainException {
+        return Response.success(resourceService.menuList(system));
     }
 
     /**

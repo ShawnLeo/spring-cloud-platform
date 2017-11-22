@@ -42,7 +42,7 @@ public class ResourceService {
             JsTreeNode<Resource> root = new JsTreeNode<Resource>("-1", "资源树");
             root.getState().setOpened(true);
             List<Resource> byParentId = this.resourceRepository.findByParentId("0");
-            iteratorInitMenuJsTree(root, byParentId);
+            iteratorInitResourceJsTree(root, byParentId);
             return root;
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
@@ -58,7 +58,7 @@ public class ResourceService {
      * @param parent
      * @param resources
      */
-    private void iteratorInitMenuJsTree(JsTreeNode<Resource> parent, List<Resource> resources) {
+    private void iteratorInitResourceJsTree(JsTreeNode<Resource> parent, List<Resource> resources) {
         if (null != resources && !resources.isEmpty()) {
             for (Resource resource : resources) {
                 JsTreeNode<Resource> children = new JsTreeNode<Resource>(resource.getId().toString(), resource.getName(), resource);
@@ -272,6 +272,24 @@ public class ResourceService {
         }
 
         return resourceVos;
+    }
+
+    public  JsTreeNode<Resource> menuList(String system) {
+        JsTreeNode<Resource> root = new JsTreeNode<>("-1", " 菜单树");
+        Resource platform = resourceRepository.findByModTypeAndName("1",system);
+
+        if(platform != null){
+            iteratorInitMenuJsTree(root,resourceRepository.findByModTypeAndParentId("2",platform.getId().toString()));
+        }
+        return root;
+    }
+
+    private void iteratorInitMenuJsTree(JsTreeNode<Resource> parent, List<Resource> resources) {
+        for (Resource resource : resources) {
+            JsTreeNode<Resource> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(), resource);
+            parent.getChildren().add(children);
+            iteratorInitMenuJsTree(children, resourceRepository.findByModTypeAndParentId("2",String.valueOf(resource.getId())));
+        }
     }
 
 }

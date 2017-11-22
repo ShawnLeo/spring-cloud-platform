@@ -9,9 +9,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by wanglu-jf on 17/9/14.
- */
 public class ResourceVO implements Comparable,Serializable {
     private static final long serialVersionUID = 1814672959354752265L;
 
@@ -41,6 +38,7 @@ public class ResourceVO implements Comparable,Serializable {
     @Length(max = 256,message = "url链接的长度在1~256个字符")
     private String path;
 
+    private String style;
     /**
      *父节点 0:父节点
      */
@@ -105,6 +103,14 @@ public class ResourceVO implements Comparable,Serializable {
         this.path = path;
     }
 
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     public String getParentId() {
         return parentId;
     }
@@ -153,6 +159,7 @@ public class ResourceVO implements Comparable,Serializable {
         sb.append(", resType='").append(resType).append('\'');
         sb.append(", modType='").append(modType).append('\'');
         sb.append(", path='").append(path).append('\'');
+        sb.append(", style='").append(style).append('\'');
         sb.append(", parentId='").append(parentId).append('\'');
         sb.append(", resLevel='").append(resLevel).append('\'');
         sb.append(", dispOrder='").append(dispOrder).append('\'');
@@ -166,16 +173,16 @@ public class ResourceVO implements Comparable,Serializable {
         if(null != o){
             Resource resource = (Resource)o;
             String resType = resource.getResType();
-                if(!this.name.equalsIgnoreCase(resource.getName())) return -1;
-                if(!this.resType.equalsIgnoreCase(resource.getResType())) return -1;
-                if(!this.remarks.equalsIgnoreCase(resource.getRemarks())) return -1;
-                if(!this.resLevel.equalsIgnoreCase(resource.getResLevel())) return -1;
-                if(!this.parentId.equalsIgnoreCase(resource.getParentId())) return -1;
-                if("1".equals(resType)){ //1:功能模块
-                    if(!this.modType.equalsIgnoreCase(resource.getModType())) return -1;
-                }else if("0".equals(resType)){
-                    if(!this.path.equalsIgnoreCase(resource.getPath())) return -1;
-                }
+            if(!this.name.equalsIgnoreCase(resource.getName())) return -1;
+            if(!this.resType.equalsIgnoreCase(resource.getResType())) return -1;
+            if(!this.remarks.equalsIgnoreCase(resource.getRemarks())) return -1;
+            if(!this.resLevel.equalsIgnoreCase(resource.getResLevel())) return -1;
+            if(!this.parentId.equalsIgnoreCase(resource.getParentId())) return -1;
+            if("1".equals(resType)){ //1:功能模块
+                if(!this.modType.equalsIgnoreCase(resource.getModType())) return -1;
+            }else if("0".equals(resType)){
+                if(!this.path.equalsIgnoreCase(resource.getPath())) return -1;
+            }
         }
         return 0;
     }

@@ -50,6 +50,12 @@ public class Resource extends AbstractResource {
     private String path;
 
     /**
+     *资源路径
+     */
+    @Column(name = "STYLE",length = 256)
+    private String style;
+
+    /**
      *父节点
      */
     @Column(name = "PARENT_ID",length = 40)
@@ -142,6 +148,14 @@ public class Resource extends AbstractResource {
         this.path = path;
     }
 
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     public String getParentId() {
         return parentId;
     }
@@ -221,6 +235,7 @@ public class Resource extends AbstractResource {
         sb.append(", resType='").append(resType).append('\'');
         sb.append(", modType='").append(modType).append('\'');
         sb.append(", path='").append(path).append('\'');
+        sb.append(", style='").append(style).append('\'');
         sb.append(", parentId='").append(parentId).append('\'');
         sb.append(", resLevel='").append(resLevel).append('\'');
         sb.append(", dispOrder='").append(dispOrder).append('\'');
