@@ -201,7 +201,7 @@ public class RoleService {
 			JsTreeNode<NodeType> root = new JsTreeNode<>("root_0", "资源权限");
 			root.getState().setOpened(true);
 			root.getState().setDisabled(true);
-			List<Resource> byParentId = this.resourceRepository.findByParentId("0");
+			List<Resource> byParentId = this.resourceRepository.findByParentIdOrderByDispOrder("0");
 			iteratorInitResourceJsTree(root, byParentId, resources);
 			map.put("trees",root);
 			return map;
@@ -231,7 +231,7 @@ public class RoleService {
 			boolean mselected = isChecked(resource.getId(), resourcesByRole);
 			JsTreeNode<NodeType> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(),NodeType.MENU, mselected);
 			parent.getChildren().add(children);
-			List<Resource> byParentId = this.resourceRepository.findByParentId(String.valueOf(resource.getId()));
+			List<Resource> byParentId = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(resource.getId()));
 			iteratorInitResourceJsTree(children,byParentId,resourcesByRole);
 		}
 	}

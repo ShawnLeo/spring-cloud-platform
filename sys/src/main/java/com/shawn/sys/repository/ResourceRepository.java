@@ -28,11 +28,11 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
      * @param parentId
      * @return
      */
-    List<Resource> findByParentId(@Param("parentId") String parentId);
+    List<Resource> findByParentIdOrderByDispOrder(@Param("parentId") String parentId);
 
     List<Resource> findByPathIsNotNullOrderByIdDesc();
 
-    List<Resource> findByModTypeAndParentId(String modType, String system);
+    List<Resource> findByModTypeAndParentIdOrderByDispOrder(String modType, String system);
 
-    Resource findByModTypeAndName(String modType, String system);
+    Resource findByModTypeAndNameOrderByDispOrder(String modType, String system);
 }

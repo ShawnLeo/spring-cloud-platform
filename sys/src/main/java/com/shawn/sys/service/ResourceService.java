@@ -39,9 +39,9 @@ public class ResourceService {
      */
     public JsTreeNode<Resource> menuJsTree() throws Exception {
         try {
-            JsTreeNode<Resource> root = new JsTreeNode<Resource>("-1", "资源树");
+            JsTreeNode<Resource> root = new JsTreeNode<>("-1", "资源树");
             root.getState().setOpened(true);
-            List<Resource> byParentId = this.resourceRepository.findByParentId("0");
+            List<Resource> byParentId = this.resourceRepository.findByParentIdOrderByDispOrder("0");
             iteratorInitResourceJsTree(root, byParentId);
             return root;
         } catch (Exception e) {
@@ -61,9 +61,9 @@ public class ResourceService {
     private void iteratorInitResourceJsTree(JsTreeNode<Resource> parent, List<Resource> resources) {
         if (null != resources && !resources.isEmpty()) {
             for (Resource resource : resources) {
-                JsTreeNode<Resource> children = new JsTreeNode<Resource>(resource.getId().toString(), resource.getName(), resource);
+                JsTreeNode<Resource> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(), resource);
                 parent.getChildren().add(children);
-                List<Resource> byId = this.resourceRepository.findByParentId(String.valueOf(resource.getId()));
+                List<Resource> byId = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(resource.getId()));
                 iteratorInitMenuJsTree(children, byId);
             }
         }
@@ -231,7 +231,7 @@ public class ResourceService {
 
             //设置level
             int newResLevel = Integer.parseInt(newResource.getResLevel());
-            List<Resource> resources = this.resourceRepository.findByParentId(String.valueOf(srcResourceId));
+            List<Resource> resources = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(srcResourceId));
             resources.add(srcResource);
             for (Resource resource : resources) {
                 resource.setResLevel(newResLevel + 1 + "");
@@ -276,10 +276,10 @@ public class ResourceService {
 
     public  JsTreeNode<Resource> menuList(String system) {
         JsTreeNode<Resource> root = new JsTreeNode<>("-1", " 菜单树");
-        Resource platform = resourceRepository.findByModTypeAndName("1",system);
+        Resource platform = resourceRepository.findByModTypeAndNameOrderByDispOrder("1",system);
 
         if(platform != null){
-            iteratorInitMenuJsTree(root,resourceRepository.findByModTypeAndParentId("2",platform.getId().toString()));
+            iteratorInitMenuJsTree(root,resourceRepository.findByModTypeAndParentIdOrderByDispOrder("2",platform.getId().toString()));
         }
         return root;
     }
@@ -288,7 +288,7 @@ public class ResourceService {
         for (Resource resource : resources) {
             JsTreeNode<Resource> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(), resource);
             parent.getChildren().add(children);
-            iteratorInitMenuJsTree(children, resourceRepository.findByModTypeAndParentId("2",String.valueOf(resource.getId())));
+            iteratorInitMenuJsTree(children, resourceRepository.findByModTypeAndParentIdOrderByDispOrder("2",String.valueOf(resource.getId())));
         }
     }
 
