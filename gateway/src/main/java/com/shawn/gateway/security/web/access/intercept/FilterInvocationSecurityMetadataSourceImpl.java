@@ -6,6 +6,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.shawn.gateway.security.remote.ResourceService;
 import com.shawn.gateway.security.remote.vo.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.ConfigAttribute;
@@ -23,7 +25,7 @@ import java.util.*;
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsService implements FilterInvocationSecurityMetadataSource {
 
-
+    private static Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
     @Value("${url.filter.permission}")
     private String permissions;
     @Autowired
@@ -82,14 +84,28 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
     @Override
     public void refresh() {
         this.setFromDb(true);
-        this.getAllConfigAttributes();
-        // TODO 校验资源权限是否正确
+        try {
+            this.getAllConfigAttributes();
+        } catch (Exception e){
+            new Thread(() -> {  // 获取失败 增加重试机制
+                while (!received){
+                    logger.info("权限资源获取失败，重试中...");
+                    try {
+                        Thread.sleep(10000);
+                        getAllConfigAttributes();
+                    } catch (Exception e1) {
+                        logger.info("重试失败，继续");
+                    }
+                }
+            }).start();
+        }
     }
 
     @Override
     public List<Resource> findAll() {
 
-        List<Resource> resources = Lists.newArrayList();
+        List<
+                Resource> resources = Lists.newArrayList();
         if (!super.fromDb) {
             // 配置文件中取
             for (String permission : permissions.split("\n")) {
@@ -114,6 +130,7 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
                 resources.add(resource);
             }
         } else {
+            logger.info("远程获取权限资源");
             // 数据库中获取
             resources = resourceService.findAll().getBody();
             for (Resource resource : resources) {
@@ -127,6 +144,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
                     }
                 }
             }
+            this.received = true;
+            logger.info("权限资源获取成功");
         }
 
         return resources;

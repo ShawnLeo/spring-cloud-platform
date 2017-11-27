@@ -64,7 +64,7 @@ public class ResourceService {
                 JsTreeNode<Resource> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(), resource);
                 parent.getChildren().add(children);
                 List<Resource> byId = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(resource.getId()));
-                iteratorInitMenuJsTree(children, byId);
+                iteratorInitResourceJsTree(children, byId);
             }
         }
     }

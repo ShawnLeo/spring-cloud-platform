@@ -16,6 +16,8 @@ public abstract class PermissionsService {
     //  false从配置中获取粗粒度资源权限
     protected boolean fromDb = false;
 
+    protected boolean received = false;
+
     public void setFromDb(boolean fromDb) {
         this.fromDb = fromDb;
     }
