@@ -71,7 +71,7 @@ public class Resource extends AbstractResource {
      *排列顺序
      */
     @Column(name = "DISP_ORDER",length = 6)
-    private String dispOrder;
+    private Integer dispOrder;
 
     /**
      *备注说明
@@ -172,11 +172,11 @@ public class Resource extends AbstractResource {
         this.resLevel = resLevel;
     }
 
-    public String getDispOrder() {
+    public Integer getDispOrder() {
         return dispOrder;
     }
 
-    public void setDispOrder(String dispOrder) {
+    public void setDispOrder(Integer dispOrder) {
         this.dispOrder = dispOrder;
     }
 

@@ -1,5 +1,6 @@
 package com.shawn.sys.service;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.shawn.common.RetCode;
@@ -27,7 +28,7 @@ import java.util.Set;
 
 @Service
 public class ResourceService {
-    private static Logger logger = LoggerFactory.getLogger(RoleService.class);
+    private static Logger logger = LoggerFactory.getLogger(ResourceService.class);
 
     @Autowired
     private ResourceRepository resourceRepository;
@@ -121,7 +122,7 @@ public class ResourceService {
      * @param resourceId
      */
     @Transactional
-    public void updateResource(ResourceVO resourceVO, String loginUserId, Long resourceId) throws ValidationException {
+    public void updateResource(ResourceVO resourceVO, String loginUserId, String resourceId) throws ValidationException {
         if (logger.isInfoEnabled()) {
             logger.info("========[修改资源菜单]，resourceVO：{}，loginUserId：{}", resourceVO, loginUserId);
         }
@@ -155,7 +156,7 @@ public class ResourceService {
      * @param resourceId
      */
     @Transactional
-    public void deleteById(Long resourceId) throws ValidationException {
+    public void deleteById(String resourceId) throws ValidationException {
         if (logger.isInfoEnabled()) {
             logger.info("========[删除资源菜单]，resourceId：{}", resourceId);
         }
@@ -184,7 +185,7 @@ public class ResourceService {
      * @param resourceId
      * @return
      */
-    public Resource findById(Long resourceId) throws EditDomainException {
+    public Resource findById(String resourceId) throws EditDomainException {
         if (logger.isInfoEnabled()) {
             logger.info("========[根据资源id查询资源]，resourceId：{}", resourceId);
         }
@@ -206,7 +207,7 @@ public class ResourceService {
      * @param newResourceId
      * @param loginUserId
      */
-    public void changeResourceNode(Long srcResourceId, Long newResourceId, String loginUserId) throws ValidationException {
+    public void changeResourceNode(String srcResourceId, String newResourceId, String loginUserId) throws ValidationException {
         if (logger.isInfoEnabled()) {
             logger.info("========[改变资源节点]，srcResourceId：{},newResourceId:{},loginUserId:{}", srcResourceId, newResourceId, loginUserId);
         }
@@ -285,11 +286,33 @@ public class ResourceService {
     }
 
     private void iteratorInitMenuJsTree(JsTreeNode<Resource> parent, List<Resource> resources) {
-        for (Resource resource : resources) {
+        resources.forEach( resource -> {
             JsTreeNode<Resource> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(), resource);
             parent.getChildren().add(children);
             iteratorInitMenuJsTree(children, resourceRepository.findByModTypeAndParentIdOrderByDispOrder("2",String.valueOf(resource.getId())));
-        }
+
+        });
+    }
+
+    public String export(String id) {
+        List<Resource> resources = Lists.newArrayList();
+        Resource resource = this.resourceRepository.findOne(id);
+        resource.setRoles(null);
+        resources.add(resource);
+        iteratorExportResources(id, resources);
+        return JSON.toJSONString(resources);
+    }
+
+    private void  iteratorExportResources(String id, List<Resource> resources){
+        resourceRepository.findByParentIdOrderByDispOrder(id).forEach( resource -> {
+            resource.setRoles(null);
+            resources.add(resource);
+            iteratorExportResources(resource.getId(), resources);
+        });
+    }
+
+    public void importResource(List<Resource> resources) {
+        resourceRepository.save(resources);
     }
 
 }

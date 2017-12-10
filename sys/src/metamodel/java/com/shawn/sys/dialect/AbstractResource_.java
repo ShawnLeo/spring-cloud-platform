@@ -8,7 +8,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(AbstractResource.class)
 public abstract class AbstractResource_ {
 
-	public static volatile SingularAttribute<AbstractResource, Long> id;
+	public static volatile SingularAttribute<AbstractResource, String> id;
 
 }
 

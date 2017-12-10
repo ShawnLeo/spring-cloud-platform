@@ -21,7 +21,8 @@ public abstract class Resource_ extends com.shawn.sys.dialect.AbstractResource_ 
 	public static volatile SingularAttribute<Resource, Date> createTime;
 	public static volatile SingularAttribute<Resource, String> updateBy;
 	public static volatile SingularAttribute<Resource, String> name;
-	public static volatile SingularAttribute<Resource, String> dispOrder;
+	public static volatile SingularAttribute<Resource, String> style;
+	public static volatile SingularAttribute<Resource, Integer> dispOrder;
 	public static volatile SingularAttribute<Resource, String> remarks;
 
 }

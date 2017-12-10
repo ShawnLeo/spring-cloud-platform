@@ -243,7 +243,7 @@ public class RoleService {
 	 * @param resources
 	 * @return
 	 */
-	private boolean isChecked(Long id, Set<Resource> resources) {
+	private boolean isChecked(String id, Set<Resource> resources) {
 		if (resources != null) {
 			for (Resource resource : resources) {
 				if (resource.getId().equals(id)) {
@@ -276,7 +276,7 @@ public class RoleService {
 
 			for(int i=0;i<roleResources.length;i++){
 				Resource resource=new Resource();
-				resource.setId(Long.valueOf(roleResources[i]));
+				resource.setId(roleResources[i]);
 				roleById.getResources().add(resource);
 			}
 			this.roleRepository.saveAndFlush(roleById);

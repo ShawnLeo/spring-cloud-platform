@@ -56,21 +56,23 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
 
         Map<RequestMatcher, Collection<ConfigAttribute>> tmpMap  = new LinkedHashMap<>();
         // 资源角色
-        for (Resource resource : resourceList) {
+        resourceList.forEach( resource -> {
             Set<ConfigAttribute> itemAttributes = new HashSet<>();
 
             Set<Role> roles = resource.getRoles();
-            for (Role role : roles) {
+            roles.forEach(role -> {
                 ConfigAttribute ca = new SecurityConfig(role.getRoleCode());
                 // 每一个请求资源对应的Role
                 itemAttributes.add(ca);
                 // 所有的Role对象
                 allAttributes.add(ca);
+            });
+            if(roles.size() > 0){
+                tmpMap.put(new AntPathRequestMatcher(resource.getPath(), null), itemAttributes);
             }
+        });
 
-            tmpMap.put(new AntPathRequestMatcher(resource.getPath(), null), itemAttributes);
-        }
-        this.requestMap = tmpMap; // 赋值，指针切换，防止并发造成数据丢失
+        this.requestMap = tmpMap; // 赋值，指针切换，防止并发
 
         return allAttributes;
     }
@@ -104,36 +106,35 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
     @Override
     public List<Resource> findAll() {
 
-        List<
-                Resource> resources = Lists.newArrayList();
-        if (!super.fromDb) {
-            // 配置文件中取
-            for (String permission : permissions.split("\n")) {
-                System.out.println(permission);
-                String[] str = permission.split("=");
-                Resource resource = new Resource();
-                resource.setPath(str[0].trim());
+        List<Resource> resources = Lists.newArrayList();
 
-                Set<Role> roles = Sets.newHashSet();
-                for (String roleStr : str[1].split(",")) {
-                    Role role = new Role();
-                    if (roleStr.trim().equals("ANONYMOUS")) {
-                        role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY);
-                    } else if (roleStr.trim().equals("USER")) {
-                        role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_FULLY);
-                    } else {
-                        role.setRoleCode("ROLE_" + roleStr.trim());
-                    }
-                    roles.add(role);
+        // 配置文件中取
+        for (String permission : permissions.split("\n")) {
+            System.out.println(permission);
+            String[] str = permission.split("=");
+            Resource resource = new Resource();
+            resource.setPath(str[0].trim());
+
+            Set<Role> roles = Sets.newHashSet();
+            for (String roleStr : str[1].split(",")) {
+                Role role = new Role();
+                if (roleStr.trim().equals("ANONYMOUS")) {
+                    role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY);
+                } else if (roleStr.trim().equals("USER")) {
+                    role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_FULLY);
+                } else {
+                    role.setRoleCode("ROLE_" + roleStr.trim());
                 }
-                resource.setRoles(roles);
-                resources.add(resource);
+                roles.add(role);
             }
-        } else {
+            resource.setRoles(roles);
+            resources.add(resource);
+        }
+        // 数据库中获取
+        if (super.fromDb) {
             logger.info("远程获取权限资源");
-            // 数据库中获取
-            resources = resourceService.findAll().getBody();
-            for (Resource resource : resources) {
+            List<Resource> resourcesFromDb = resourceService.findAll().getBody();
+            for (Resource resource : resourcesFromDb) {
                 for (Role role : resource.getRoles()) {
                     if(role.getRoleCode().trim().equals("ANONYMOUS")){
                         role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY);
@@ -146,6 +147,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
             }
             this.received = true;
             logger.info("权限资源获取成功");
+            resourcesFromDb.addAll(resources); // 配置文件中的资源在后
+            resources = resourcesFromDb;
         }
 
         return resources;

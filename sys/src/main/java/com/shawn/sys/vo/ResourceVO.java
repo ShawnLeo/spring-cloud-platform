@@ -12,7 +12,7 @@ import java.util.Set;
 public class ResourceVO implements Comparable,Serializable {
     private static final long serialVersionUID = 1814672959354752265L;
 
-    private Long id;
+    private String id;
     /**
      *资源名称
      */
@@ -52,7 +52,7 @@ public class ResourceVO implements Comparable,Serializable {
     /**
      *排列顺序
      */
-    private String dispOrder = "999";
+    private Integer dispOrder = 999;
 
     /**
      *备注说明
@@ -63,11 +63,11 @@ public class ResourceVO implements Comparable,Serializable {
 
     private Set<RoleVO> roles = new HashSet<RoleVO>();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -127,11 +127,11 @@ public class ResourceVO implements Comparable,Serializable {
         this.resLevel = resLevel;
     }
 
-    public String getDispOrder() {
+    public Integer getDispOrder() {
         return dispOrder;
     }
 
-    public void setDispOrder(String dispOrder) {
+    public void setDispOrder(Integer dispOrder) {
         this.dispOrder = dispOrder;
     }
 

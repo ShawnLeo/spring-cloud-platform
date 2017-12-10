@@ -1,6 +1,6 @@
 package com.shawn.sys.dialect;
 
-import com.shawn.sys.dialect.Schema.Tables;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,21 +9,20 @@ import java.io.Serializable;
 public abstract class AbstractResource implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private static final String SEQUENCE = Tables.RESOURCE + Schema.SEQ_SUFFIX;
 
-//	@SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE)
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
-//	@Id
-	@GeneratedValue
+	private static final String GENERATOR_NAME = "system-uuid";
+
 	@Id
-	@Column(name = "ID",length = 40,unique = true,nullable = false)
-	protected Long id;
+	@GenericGenerator(name = GENERATOR_NAME, strategy = "uuid")
+	@GeneratedValue(generator = GENERATOR_NAME)
+	@Column(name = "ID",length = 40)
+	protected String id;
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 }
