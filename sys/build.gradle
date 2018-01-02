@@ -40,8 +40,16 @@ springBoot {
 	mainClass = 'com.shawn.sys.SysApplication'
 }
 
+repositories {
+	mavenCentral()
+}
+
 ext {
 	springCloudVersion = 'Dalston.SR3'
+}
+
+springBoot {
+	mainClass = 'com.shawn.sys.SysApplication'
 }
 
 dependencyManagement {

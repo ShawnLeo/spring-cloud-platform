@@ -21,6 +21,12 @@ repositories {
 	mavenCentral()
 }
 
+springBoot {
+	mainClass = 'com.shawn.sys.EurekaApplication'
+}
+configurations {
+	all*.exclude group: '', module: 'servlet-api'
+}
 
 ext {
 	springCloudVersion = 'Dalston.SR3'

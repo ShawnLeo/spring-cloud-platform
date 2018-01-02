@@ -109,8 +109,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
         List<Resource> resources = Lists.newArrayList();
 
         // 配置文件中取
-        for (String permission : permissions.split("\n")) {
-            System.out.println(permission);
+        for (String permission : permissions.replace("\\n","@n").split("@n")) {
+            logger.info(permission);
             String[] str = permission.split("=");
             Resource resource = new Resource();
             resource.setPath(str[0].trim());

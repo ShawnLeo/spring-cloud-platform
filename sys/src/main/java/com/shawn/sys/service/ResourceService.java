@@ -10,6 +10,7 @@ import com.shawn.sys.exception.EditDomainException;
 import com.shawn.sys.exception.ValidationException;
 import com.shawn.sys.repository.ResourceRepository;
 import com.shawn.sys.util.MessageUtils;
+import com.shawn.sys.util.UuidHelper;
 import com.shawn.sys.vo.JsTreeNode;
 import com.shawn.sys.vo.ResourceVO;
 import com.shawn.sys.vo.RoleVO;
@@ -96,6 +97,7 @@ public class ResourceService {
                         throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "该资源名称已被使用");
                     }
                 }
+                resource.setId(UuidHelper.randomShorterString());
                 resource.setCreateBy(loginUserId);//创建者
                 resource.setCreateTime(new Date());
             } else {

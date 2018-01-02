@@ -26,6 +26,10 @@ ext {
 	springCloudVersion = 'Dalston.SR3'
 }
 
+springBoot {
+	mainClass = 'com.shawn.gateway.GatewayApplication'
+}
+
 dependencies {
 	compile 'com.alibaba:fastjson:1.2.34'
 	compile('com.google.guava:guava:23.0')
@@ -37,6 +41,7 @@ dependencies {
 
 	compile('org.springframework.cloud:spring-cloud-starter-feign')
 	compile('org.springframework.cloud:spring-cloud-starter-hystrix')
+	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
 
 	compile('org.springframework.boot:spring-boot-starter-redis:1.4.1.RELEASE')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

@@ -14,8 +14,8 @@ subprojects {
     repositories {
 //        mavenLocal()
         maven {
-		    url "http://49.4.160.163:8093/nexus/content/groups/public/"
-//            url "http://10.133.255.240:8093/nexus/content/groups/public/"
+//		    url "http://49.4.160.163:8093/nexus/content/groups/public/"
+            url "http://10.133.255.240:8093/nexus/content/groups/public/"
         }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
 //        mavenCentral()

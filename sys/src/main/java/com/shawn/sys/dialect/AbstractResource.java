@@ -13,8 +13,8 @@ public abstract class AbstractResource implements Serializable {
 	private static final String GENERATOR_NAME = "system-uuid";
 
 	@Id
-	@GenericGenerator(name = GENERATOR_NAME, strategy = "uuid")
-	@GeneratedValue(generator = GENERATOR_NAME)
+//	@GenericGenerator(name = GENERATOR_NAME, strategy = "uuid")
+//	@GeneratedValue(generator = GENERATOR_NAME)
 	@Column(name = "ID",length = 40)
 	protected String id;
 
