@@ -39,6 +39,11 @@ public class UserAuthVo implements Serializable {
     private String authPass;
 
     /**
+     * 用户手机号
+     */
+    private String mobile;
+
+    /**
      * 登陆次数
      */
     private String loginCount;
@@ -96,6 +101,14 @@ public class UserAuthVo implements Serializable {
 
     public void setAuthType(String authType) {
         this.authType = authType;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getAuthPass() {

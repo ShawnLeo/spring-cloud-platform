@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.shawn.common.ComParams;
+import com.shawn.gateway.security.core.JwtUserDetails;
 import com.shawn.gateway.util.HttpHelper;
 import com.shawn.gateway.util.UserSession;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,8 +41,7 @@ public class ParamSetFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        if (ctx.getRequest().getAttribute("userSession") == null) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             return false;
         }
         return true;
@@ -48,10 +49,10 @@ public class ParamSetFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-
         RequestContext ctx = RequestContext.getCurrentContext();
 
-        UserSession userSession = (UserSession) ctx.getRequest().getAttribute("userSession");
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
         Map<String, List<String>> params = ctx.getRequestQueryParams();
         if (params == null) {
@@ -60,11 +61,15 @@ public class ParamSetFilter extends ZuulFilter {
 
         HttpHelper.setRequestParams(params, ctx.getRequest().getQueryString());
 
+        List<String> roles = Lists.newArrayList();
+        userDetails.getAuthorities().forEach( authority ->{
+            roles.add(authority.getAuthority());
+        });
         // 设置用户id及用户角色参数
-        params.put(ComParams.X_USERID, Lists.newArrayList(userSession.getId().toString()));
-        params.put(ComParams.X_LOGINNAME, Lists.newArrayList(userSession.getLoginName()));
-        params.put(ComParams.X_ROLECODE, Lists.newArrayList(userSession.getRoleNames()));
-        params.put(ComParams.X_MOBILE, Lists.newArrayList(userSession.getMobile()));
+        params.put(ComParams.X_USERID, Lists.newArrayList(userDetails.getId().toString()));
+        params.put(ComParams.X_LOGINNAME, Lists.newArrayList(userDetails.getUsername()));
+        params.put(ComParams.X_ROLECODE, roles);
+        params.put(ComParams.X_MOBILE, Lists.newArrayList(userDetails.getMobile()));
 
         ctx.setRequestQueryParams(params);
 

@@ -40,6 +40,7 @@ public class UserAuthController {
             userAuthVo.setAuthPass(userAuth.getAuthPass());
             userAuthVo.setAuthType(userAuth.getAuthType());
             userAuthVo.setUserId(userAuth.getUser().getId().toString());
+            userAuthVo.setMobile(userAuth.getUser().getPhone());
             userAuthVo.setUserStatus(userAuth.getUser().getStatus());
             Set<RoleVO> roleVOs = Sets.newHashSet();
             for (Role role:userAuth.getUser().getRoles()) {

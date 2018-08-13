@@ -116,7 +116,7 @@ public class UserService {
             logger.info("========[根据主键查询用户]，userId：{}",userId);
         }
         try {
-            return this.userRepository.findOne(userId);
+            return this.userRepository.findById(userId).get();
         } catch (Exception e) {
             if(logger.isErrorEnabled()){
                 logger.error("[=======根据主键查询用户出现异常]，errorMSG:{}",e.getMessage());
@@ -135,11 +135,11 @@ public class UserService {
             logger.info("========[修改密码]，userVO：{},loginUserId",userVO,loginUserId);
         }
         try {
-            User user = userRepository.findOne(Long.valueOf(loginUserId));
+            User user = userRepository.findById(Long.valueOf(loginUserId)).get();
             if(null == user){
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该用户不存在");
             }
-            UserAuth userAuth = userAuthRepository.findOne(userVO.getAuthId());
+            UserAuth userAuth = userAuthRepository.findById(userVO.getAuthId()).get();
             if(null == userAuth){
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该用户未认证");
             }
@@ -170,11 +170,11 @@ public class UserService {
             logger.info("========[重置密码]，userVO：{},loginUserId",userVO,loginUserId);
         }
         try {
-            User user = userRepository.findOne(userId);
+            User user = userRepository.findById(userId).get();
             if(null == user){
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该用户不存在");
             }
-            UserAuth userAuth = userAuthRepository.findOne(userVO.getAuthId());
+            UserAuth userAuth = userAuthRepository.findById(userVO.getAuthId()).get();
             if(null == userAuth){
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该用户未认证");
             }
@@ -212,7 +212,7 @@ public class UserService {
         }
         String operate=null;
         try {
-            User user = userRepository.findOne(userId);
+            User user = userRepository.findById(userId).get();
             if(null == user){
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该用户不存在");
             }

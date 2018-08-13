@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.6.RELEASE'
+		springBootVersion = '2.0.1.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -13,27 +13,24 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
+group = 'com.shawn'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
 
 repositories {
 	mavenCentral()
 }
 
-springBoot {
-	mainClass = 'com.shawn.sys.EurekaApplication'
-}
-configurations {
-	all*.exclude group: '', module: 'servlet-api'
-}
-
 ext {
-	springCloudVersion = 'Dalston.SR3'
+	springCloudVersion = 'Finchley.SR1'
 }
 
 dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-eureka-server')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

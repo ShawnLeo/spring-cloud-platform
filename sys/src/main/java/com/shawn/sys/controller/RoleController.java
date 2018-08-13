@@ -39,8 +39,8 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+	@Autowired
+	private DiscoveryClient discoveryClient;
 	/**
 	 * 保存角色
 	 * @param roleVO
@@ -130,19 +130,24 @@ public class RoleController {
 	@RequestMapping("/set")
 	public Response setPermissions(@RequestBody RoleVO roleVO) throws ValidationException{
 		this.roleService.setPermissionsByRoleId(roleVO);
-        notifyGatewayRefresh();
+		notifyGatewayRefresh();
 		return Response.success(null);
 	}
 
-    /**
-     *
-     * 通知每一个网管刷新资源权限列表
-     *
-     * @throws ValidationException
-     */
+	/**
+	 * 根据系统编号获取 菜单
+	 * @return
+	 */
+	@RequestMapping(value = "/menus", method = RequestMethod.GET)
+	public Response getMenuListByRole(@RequestParam(ComParams.X_ROLECODE)List<String> roleCodes,
+									  @RequestParam(ComParams.X_LOGINNAME)String loginName,
+									  @RequestParam(value = "system",defaultValue = "all") String system) throws ValidationException {
+		return Response.success(roleService.getMenuListByRole(roleCodes, loginName, system));
+	}
+
 	/**
 	 *
-	 * 通知每一个网管刷新资源权限列表
+	 * 通知每一个网关刷新资源权限列表
 	 *
 	 *
 	 */

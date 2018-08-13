@@ -19,10 +19,11 @@ public class JwtUserDetails implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
     private boolean enabled;
 
-    public JwtUserDetails(Long id, String username, String password,
+    public JwtUserDetails(Long id, String username, String mobile, String password,
           Collection<? extends GrantedAuthority> authorities, boolean enabled) {
         this.id = id;
         this.username = username;
+        this.mobile = mobile;
         this.password = password;
         this.authorities = authorities;
         this.enabled = enabled;

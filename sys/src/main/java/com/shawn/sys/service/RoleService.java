@@ -1,5 +1,7 @@
 package com.shawn.sys.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.shawn.common.RetCode;
 import com.shawn.sys.entity.Resource;
 import com.shawn.sys.entity.Role;
@@ -115,7 +117,7 @@ public class RoleService {
 		}
 		try {
 			//根据id查询角色
-			Role roleById = roleRepository.findOne(roleVO.getId());
+			Role roleById = roleRepository.findById(roleVO.getId()).get();
 			if(null == roleById){
 				throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"角色不存在");
 			}
@@ -147,7 +149,7 @@ public class RoleService {
 			logger.info("========[根据角色id查询角色]，roleId：{}",roleId);
 		}
 		try {
-			return this.roleRepository.findOne(roleId);
+			return this.roleRepository.findById(roleId).get();
 		} catch (Exception e) {
 			if(logger.isErrorEnabled()){
 				logger.error("[=======根据角色id查询角色出现异常]，errorMSG:{}",e.getMessage());
@@ -166,7 +168,7 @@ public class RoleService {
 		if(logger.isInfoEnabled()){
 			logger.info("========[根据角色id删除角色]，roleId：{}",roleId);
 		}
-		Role role = this.roleRepository.findOne(roleId);
+		Role role = this.roleRepository.findById(roleId).get();
 		if(null == role){
 			throw new ValidationException(RetCode.INTERNALEXCEP.getCode(),"该角色不存在");
 		}
@@ -176,7 +178,7 @@ public class RoleService {
 			throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"该角色下有用户，不能删除");
 		}
 		try {
-			this.roleRepository.delete(roleId);
+			this.roleRepository.deleteById(roleId);
 		} catch (Exception e) {
 			if(logger.isErrorEnabled()){
 				logger.error("[=======根据角色id删除角色出现异常]，errorMSG:{}",e.getMessage());
@@ -191,7 +193,7 @@ public class RoleService {
 	public Map<String,Object> initPermissions(Long roleId) throws ValidationException {
 		try {
 			Map<String,Object> map = new HashMap<>();
-			Role role = this.roleRepository.findOne(roleId);
+			Role role = this.roleRepository.findById(roleId).get();
 			if(null == role){
 				throw new ValidationException(RetCode.INTERNALEXCEP.getCode(),"该角色不存在");
 			}
@@ -229,7 +231,7 @@ public class RoleService {
 		for (Resource resource : resources) {
 			// 添加菜单节点
 			boolean mselected = isChecked(resource.getId(), resourcesByRole);
-			JsTreeNode<NodeType> children = new JsTreeNode<>(resource.getId().toString(), resource.getName(),NodeType.MENU, mselected);
+			JsTreeNode<NodeType> children = new JsTreeNode<>(resource.getId(), resource.getName(),NodeType.MENU, mselected);
 			parent.getChildren().add(children);
 			List<Resource> byParentId = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(resource.getId()));
 			iteratorInitResourceJsTree(children,byParentId,resourcesByRole);
@@ -265,7 +267,7 @@ public class RoleService {
 		}
 		try {
 			//根据id查询角色
-			Role roleById = roleRepository.findOne(roleVO.getId());
+			Role roleById = roleRepository.findById(roleVO.getId()).get();
 			if(null == roleById){
 				throw new ValidationException(RetCode.VALIDATEERROR.getCode(),"角色不存在");
 			}
@@ -293,5 +295,67 @@ public class RoleService {
 		}
 
 
+	}
+
+	public JsTreeNode getMenuListByRole(List<String> roleCodes, String loginName, String system) {
+		List<Role> roles = this.roleRepository.findByRoleCodeIn(roleCodes);
+		Set<Resource> resources = Sets.newHashSet();
+		roles.forEach(role -> {
+			resources.addAll(role.getResources());
+		});
+//		Set<Resource> resources = role.getResources();
+		JsTreeNode<Resource> root = new JsTreeNode<>("root_0", loginName);
+		root.getState().setSelected(true);
+		List<Resource> tops = Lists.newArrayList();
+		if("all".equals(system)){
+			// 全平台展示(一级是平台)
+			tops = this.resourceRepository.findByParentIdOrderByDispOrder("0");
+//		} else if ("meme2c".equals(system)){
+			// 美美投资监管系统 (一级是平台)
+//			tops = this.resourceRepository.findByNameInAndParentIdOrderByDispOrder(myList,"0");
+		} else{
+			// 单平台菜单（一级是菜单）
+			Resource platform = resourceRepository.findByModTypeAndNameOrderByDispOrder("1",system);
+			if(platform!= null){
+				tops = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(platform.getId()));
+			}
+		}
+		iterator(root, tops, resources);
+		return root;
+	}
+
+
+	private void iterator(JsTreeNode<Resource> parent, List<Resource> resources,Set<Resource> resourcesByRole) {
+		for (Resource resource : resources) {
+			// 添加菜单节点
+			boolean isChecked = isChecked(resource.getId(), resourcesByRole);
+			JsTreeNode<Resource> node = new JsTreeNode<>(resource.getId(), resource.getName(),resource, isChecked);
+			parent.getChildren().add(node);
+			List<Resource> byParentId = this.resourceRepository.findByParentIdOrderByDispOrder(String.valueOf(resource.getId()));
+
+			iterator(node,byParentId,resourcesByRole);
+
+			ifShow(parent, node, isChecked);
+		}
+
+	}
+
+	private void ifShow(JsTreeNode<Resource> parent, JsTreeNode<Resource> node, boolean isChecked){
+		// api资源未被选中  不显示
+		if (node.getLiAttr().getResType().equals("1") && !isChecked) {
+			parent.getChildren().remove(node);
+		}
+
+		// 功能模 不显示
+		if("3".equals(node.getLiAttr().getModType())){
+			parent.getChildren().remove(node);
+		}
+
+		// 平台、菜单 模块 下无子项 而且没未被选中  不显示
+		if(!"3".equals(node.getLiAttr().getModType())
+				&& node.getChildren().size()<1
+				&& !isChecked){
+			parent.getChildren().remove(node);
+		}
 	}
 }

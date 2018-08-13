@@ -4,13 +4,18 @@ import com.shawn.gateway.security.crypto.MD5PasswordEncoder;
 import com.shawn.gateway.security.web.UnAuthenticationEntryPoint;
 import com.shawn.gateway.security.web.access.AccessAuthenticationEntryPoint;
 import com.google.common.collect.Lists;
+import com.shawn.gateway.security.web.authentication.logout.MyLogoutSuccessHandler;
+import com.shawn.gateway.security.web.authentication.rememberme.MyRememberMeServices;
 import com.shawn.gateway.security.web.filter.AuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,8 +38,15 @@ import java.util.List;
 /**
  * @author Shawn
  */
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    public static final String REMEMBER_KEY = "myRememberMeKey";
+
+    // 一年 60 * 60 *24 * 7
+    @Value("${token.validity.seconds:604800}")
+    private int TOKEN_VALIDITY_SECONDS;
 
     @Autowired
     private UnAuthenticationEntryPoint unauthorizedHandler;
@@ -47,6 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
+    @Autowired
+    private MyLogoutSuccessHandler myLogoutSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -56,7 +72,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 权限拦截，response返回
                 .and().exceptionHandling().accessDeniedHandler(accessAuthenticationEntryPoint)
                 // 不需要创建session
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 退出登陆成功 Handler
+                .and().logout().logoutSuccessHandler(myLogoutSuccessHandler)
+
+                .and().rememberMe().rememberMeServices(rememberMeServicesBean()).key(REMEMBER_KEY);
+
 
         // 跨域拦截
         // custom-filter顺序详见：
@@ -85,6 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setPasswordEncoder(new MD5PasswordEncoder());
+
         return authenticationProvider;
     }
 
@@ -116,8 +138,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+    public AuthenticationTokenFilter authenticationTokenFilterBean() {
         return new AuthenticationTokenFilter();
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServicesBean() {
+        MyRememberMeServices rememberMeServices = new MyRememberMeServices(REMEMBER_KEY, userService);
+        rememberMeServices.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
+        return rememberMeServices;
+    }
 }

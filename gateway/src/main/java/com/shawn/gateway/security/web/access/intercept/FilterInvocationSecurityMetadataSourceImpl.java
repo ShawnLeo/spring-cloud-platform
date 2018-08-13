@@ -122,6 +122,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
                     role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY);
                 } else if (roleStr.trim().equals("USER")) {
                     role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_FULLY);
+                } else if (roleStr.trim().equals("REMEMBERED")) {
+                    role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_REMEMBERED);
                 } else {
                     role.setRoleCode("ROLE_" + roleStr.trim());
                 }

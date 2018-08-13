@@ -51,9 +51,7 @@ public class CustomUserService implements UserDetailsService {
             }
 
         });
-        return new JwtUserDetails(Long.parseLong(userAuth.getUserId()),userAuth.getAuthId(),userAuth.getAuthPass(),
+        return new JwtUserDetails(Long.parseLong(userAuth.getUserId()), userAuth.getAuthId(),userAuth.getMobile(), userAuth.getAuthPass(),
                 authorities, !userAuth.getUserStatus().equals("-1"));
-//        return new JwtUserDetails(Long.parseLong(userAuth.getUserId()),userAuth.getAuthId(),userAuth.getAuthPass(),
-//                AuthorityUtils.createAuthorityList(UserRole.INVESTOR.getCode()), !userAuth.getUserStatus().equals("-1"));
     }
 }
