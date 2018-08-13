@@ -16,4 +16,15 @@ zuul:
 
 url:
   filter:
-    permission: /** = USER
+    permission: /permissions/refresh = ANONYMOUS\n/login = ANONYMOUS\n/** = USER
+
+security:
+  oauth2:
+#    client:
+#      access-token-uri: http://platform-gateway/oauth/token
+#      user-authorization-uri: http://platform-gateway/oauth/authorize
+#      client-id: webapp
+    resource:
+      filter-order: 3
+#      user-info-uri: http://platform-sys/auth/info
+#      prefer-token-info: false
