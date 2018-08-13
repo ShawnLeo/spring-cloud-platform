@@ -1,5 +1,6 @@
 package com.shawn.gateway.security.core;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.shawn.common.Response;
 import com.shawn.common.RetCode;
@@ -13,8 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,19 +34,60 @@ public class LoginController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private RememberMeServices rememberMeServices;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @RequestMapping(value = {"/login"}, method = {RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public Response login(@RequestParam String username,
-                          @RequestParam String password) {
+    public Response login(@RequestParam String username, @RequestParam String password) {
         logger.info("用户登陆：{}",username);
         Response resp = new Response();
+        Authentication token = new UsernamePasswordAuthenticationToken(username, password);
+        authentication(token, resp);
+        logger.info("用户登陆完成，返回码：{}。返回消息；{}",
+                resp.getHeader().getCode(),resp.getHeader().getMessage());
+
+        return resp;
+    }
+
+
+    @RequestMapping(value = {"/app/login"}, method = {RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public Response appLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam String username,
+                             @RequestParam String password, @RequestParam(name = "remember", defaultValue = "false") boolean remember) {
+        logger.info("用户登陆：{},remember:{}",username, remember);
+        Response resp = new Response();
+        Authentication token = new UsernamePasswordAuthenticationToken(username, password);
+
+        authentication(token, resp);
+
+        // 记住密码
+        if (RetCode.SUCCESS.getCode().equals(resp.getHeader().getCode()) && remember){
+
+            rememberMeServices.loginSuccess(request, response, token);
+
+            String jwtToken = (String) resp.getBody();
+            Map map = Maps.newHashMap();
+            map.put("sessionId", jwtToken);
+            map.put("rememberKey", request.getAttribute("rememberKey"));
+            map.put("rememberMaxAge", request.getAttribute("rememberMaxAge"));
+            resp.setBody(map);
+        }
+
+        logger.info("用户登陆完成，返回码：{}。返回消息；{}",
+                resp.getHeader().getCode(),resp.getHeader().getMessage());
+
+        return resp;
+    }
+
+    private void authentication(Authentication token, Response resp){
+
         try {
-            Authentication token = new UsernamePasswordAuthenticationToken(username, password);
+
             token = authenticationManager.authenticate(token); // 登录认证
             SecurityContextHolder.getContext().setAuthentication(token);
-
             // 登陆成功
             resp.getHeader().setCode(RetCode.SUCCESS.getCode());
             resp.getHeader().setMessage(RetCode.SUCCESS.getMessage());
@@ -63,7 +109,6 @@ public class LoginController {
             session.setLoginName(userDetails.getUsername());
             session.setDisabled(!userDetails.isEnabled());
             resp.setBody(jwtTokenUtil.generate(session));
-
         } catch (UsernameNotFoundException ex) {
             resp.getHeader().setCode(RetCode.USERORPWDERR.getCode());
             resp.getHeader().setMessage(RetCode.USERORPWDERR.getMessage());
@@ -77,9 +122,6 @@ public class LoginController {
             resp.getHeader().setCode(RetCode.INTERNALEXCEP.getCode());
             resp.getHeader().setMessage(e.getMessage());
         }
-        logger.info("用户登陆完成，返回码：{}。返回消息；{}",
-                resp.getHeader().getCode(),resp.getHeader().getMessage());
 
-        return resp;
     }
 }

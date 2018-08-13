@@ -14,37 +14,11 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
      * @param roleCode
      * @return
      */
-    public Role findByRoleCode(String roleCode);
+    Role findByRoleCode(String roleCode);
+
+    List<Role> findByRoleCodeIn(List<String> roleCodes);
 
     @Query(value = "select userId from sys_user_role where roleId = ?1", nativeQuery=true)
-    public List<Long> findByRoleUserId(Long roleId);
-
-	/*class DelegatingRoleSpecificationExecutor {
-		private RoleRepository repository;
-
-		public DelegatingRoleSpecificationExecutor(RoleRepository repository) {
-			this.repository = repository;
-		}
-
-		public Page<Role> findAll(final Role filter, Pageable pageable) {
-			return repository.findAll(new Specification<Role>() {
-				@Override
-				public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-					if (filter == null) {
-						return cb.conjunction();
-					}
-
-					return cb.and(merge(
-
-					eq(cb, root.get(Role_.name), filter.getName()),
-					like(cb, root.get(Role_.description), filter.getDescription())
-
-					));
-				}
-			}, pageable);
-		}
-	}
-
-	Role findByDescription(String description);*/
+    List<Long> findByRoleUserId(Long roleId);
 
 }

@@ -63,9 +63,11 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
             // session -> userDetails
             List<GrantedAuthority> authorities = Lists.newArrayList();
+            List<GrantedAuthority> userAuthorities = Lists.newArrayList();
             if (session.getRoleNames() != null) {
                 session.getRoleNames().forEach((roleName) -> {
                     authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+                    userAuthorities.add(new SimpleGrantedAuthority(roleName));
                 });
             }
 
@@ -74,17 +76,17 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 return;
             }
 
-            JwtUserDetails userDetails = new JwtUserDetails(session.getId(), session.getLoginName(), null,
-                    authorities, session.isDisabled());
+            JwtUserDetails userDetails = new JwtUserDetails(session.getId(), session.getLoginName(),session.getMobile(), null,
+                    userAuthorities, session.isDisabled());
+            userDetails.setMobile(session.getMobile());
 
             // 认证用户，并设置 security context
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
             logger.info("认证用户：" + session.getLoginName() + ", 设置 security context。");
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            request.setAttribute("userSession",session);
         }
 
         chain.doFilter(request, response);

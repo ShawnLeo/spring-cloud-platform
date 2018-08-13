@@ -10,6 +10,7 @@ import com.shawn.sys.exception.EditDomainException;
 import com.shawn.sys.exception.ValidationException;
 import com.shawn.sys.repository.ResourceRepository;
 import com.shawn.sys.util.MessageUtils;
+import com.shawn.sys.util.UuidHelper;
 import com.shawn.sys.vo.JsTreeNode;
 import com.shawn.sys.vo.ResourceVO;
 import com.shawn.sys.vo.RoleVO;
@@ -96,6 +97,7 @@ public class ResourceService {
                         throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "该资源名称已被使用");
                     }
                 }
+                resource.setId(UuidHelper.randomShorterString());
                 resource.setCreateBy(loginUserId);//创建者
                 resource.setCreateTime(new Date());
             } else {
@@ -127,7 +129,7 @@ public class ResourceService {
             logger.info("========[修改资源菜单]，resourceVO：{}，loginUserId：{}", resourceVO, loginUserId);
         }
         try {
-            Resource resource = this.resourceRepository.findOne(resourceId);
+            Resource resource = this.resourceRepository.findById(resourceId).get();
             if (null == resource) {
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "资源不存在");
             }
@@ -161,7 +163,7 @@ public class ResourceService {
             logger.info("========[删除资源菜单]，resourceId：{}", resourceId);
         }
         try {
-            Resource resource = this.resourceRepository.findOne(resourceId);
+            Resource resource = this.resourceRepository.findById(resourceId).get();
             if (null == resource) {
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "资源不存在");
             }
@@ -190,7 +192,7 @@ public class ResourceService {
             logger.info("========[根据资源id查询资源]，resourceId：{}", resourceId);
         }
         try {
-            return this.resourceRepository.findOne(resourceId);
+            return this.resourceRepository.findById(resourceId).get();
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("[=======根据角色id查询角色出现异常]，errorMSG:{}", e.getMessage());
@@ -215,8 +217,8 @@ public class ResourceService {
             throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "新资源节点位置有误");
         }
         try {
-            Resource srcResource = this.resourceRepository.findOne(srcResourceId);
-            Resource newResource = this.resourceRepository.findOne(newResourceId);
+            Resource srcResource = this.resourceRepository.findById(srcResourceId).get();
+            Resource newResource = this.resourceRepository.findById(newResourceId).get();
             if (null == srcResource || null == newResource) {
                 throw new ValidationException(RetCode.VALIDATEERROR.getCode(), "该资源不存在");
             }
@@ -239,7 +241,7 @@ public class ResourceService {
                 resource.setUpdateBy(loginUserId);
                 resource.setUpdateTime(new Date());
             }
-            this.resourceRepository.save(resources);
+            this.resourceRepository.saveAll(resources);
         } catch (ValidationException e) {
             if (logger.isErrorEnabled()) {
                 logger.error("[=======改变资源节点]，errorMSG:{}", e.getMessage());
@@ -260,10 +262,8 @@ public class ResourceService {
         for (Resource resource : resources) {
             ResourceVO resourceVO = new ResourceVO();
             BeanUtils.copyProperties(resource, resourceVO);
-            resource.getRoles();
-            Set<Role> roles = resource.getRoles();
             Set<RoleVO> roleVOs = Sets.newHashSet();
-            for (Role role : roles) {
+            for (Role role : resource.getRoles()) {
                 RoleVO roleVO = new RoleVO();
                 BeanUtils.copyProperties(role, roleVO);
                 roleVOs.add(roleVO);
@@ -296,7 +296,7 @@ public class ResourceService {
 
     public String export(String id) {
         List<Resource> resources = Lists.newArrayList();
-        Resource resource = this.resourceRepository.findOne(id);
+        Resource resource = this.resourceRepository.findById(id).get();
         resource.setRoles(null);
         resources.add(resource);
         iteratorExportResources(id, resources);
@@ -312,7 +312,7 @@ public class ResourceService {
     }
 
     public void importResource(List<Resource> resources) {
-        resourceRepository.save(resources);
+        resourceRepository.saveAll(resources);
     }
 
 }

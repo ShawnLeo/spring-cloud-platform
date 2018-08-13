@@ -48,7 +48,7 @@ public class RoleVO implements Serializable {
      */
     private int size = 10;
 
-    private Set<Resource> resources = new HashSet<>();
+//    private Set<Resource> resources = new HashSet<>();
 
     private String[] roleResources=null;
 
@@ -106,13 +106,13 @@ public class RoleVO implements Serializable {
         }
     }
 
-    public Set<Resource> getResources() {
-        return resources;
-    }
-
-    public void setResources(Set<Resource> resources) {
-        this.resources = resources;
-    }
+//    public Set<Resource> getResources() {
+//        return resources;
+//    }
+//
+//    public void setResources(Set<Resource> resources) {
+//        this.resources = resources;
+//    }
 
     public int getPage() {
         return page;

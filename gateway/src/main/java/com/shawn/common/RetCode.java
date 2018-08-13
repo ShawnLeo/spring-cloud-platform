@@ -2,7 +2,7 @@ package com.shawn.common;
 
 public enum RetCode {
 
-    SUCCESS("0", "success"),ACCESSDENY("-1", "访问拒绝"), VALIDATEERROR("-2", "验证错误"), INTERNALEXCEP("-9", "内部异常"), TIMEOUT("-100", "超时"), NOLOGIN("-101", "请登录"), LOGINED("-102",
+    SUCCESS("0", "success"),ACCESSDENY("-1", "访问拒绝"), VALIDATEERROR("-2", "验证错误"), REMEMBERMELOGIN("-8", "记住密码自动登陆失败"), INTERNALEXCEP("-9", "内部异常"), TIMEOUT("-100", "超时"), NOLOGIN("-101", "请登录"), LOGINED("-102",
             "您已在别处登录此处已下线"), USERORPWDERR("-103", "用户名或密码错误"),
     // USERLOCKED("-104","账户被锁定"),
     // LOCKEDPLEASE("-105","账号已锁定，12小时后自动解锁立即解锁，请联系客服：400-0666-088\n"),

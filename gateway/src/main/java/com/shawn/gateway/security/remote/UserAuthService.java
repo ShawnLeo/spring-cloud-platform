@@ -2,7 +2,7 @@ package com.shawn.gateway.security.remote;
 
 import com.shawn.common.Response;
 import com.shawn.gateway.security.remote.vo.UserAuth;
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 

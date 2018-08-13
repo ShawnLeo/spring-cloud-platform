@@ -34,6 +34,11 @@ public class UserAuth implements Serializable {
     private String authType;
 
     /**
+     * 用户手机号
+     */
+    private String mobile;
+
+    /**
      * 认证密码
      */
     private String authPass;
@@ -96,6 +101,14 @@ public class UserAuth implements Serializable {
 
     public void setAuthType(String authType) {
         this.authType = authType;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getAuthPass() {

@@ -4,16 +4,16 @@ package com.shawn.sys.util;
  * Created by wanglu-jf on 17/9/8.
  */
 
+import org.hibernate.validator.HibernateValidatorFactory;
 import org.hibernate.validator.internal.util.Contracts;
 import org.hibernate.validator.internal.util.logging.Log;
 import org.hibernate.validator.internal.util.logging.LoggerFactory;
-import org.hibernate.validator.internal.util.scriptengine.ScriptEvaluator;
-import org.hibernate.validator.internal.util.scriptengine.ScriptEvaluatorFactory;
+import org.hibernate.validator.spi.scripting.ScriptEvaluator;
+import org.hibernate.validator.spi.scripting.ScriptEvaluatorFactory;
 
-import javax.script.ScriptException;
-import javax.validation.ConstraintDeclarationException;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+
+import javax.validation.*;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ import static org.hibernate.validator.internal.util.logging.Messages.MESSAGES;
 
 public class PropertyScriptAssertValidator implements ConstraintValidator<PropertyScriptAssert, Object> {
 
-    private static final Log log = LoggerFactory.make();
+    private static final Log log = LoggerFactory.make(MethodHandles.lookup());
 
     private String script;
     private String languageName;
@@ -43,15 +43,10 @@ public class PropertyScriptAssertValidator implements ConstraintValidator<Proper
         Object evaluationResult;
         ScriptEvaluator scriptEvaluator;
 
-        try {
-            ScriptEvaluatorFactory evaluatorFactory = ScriptEvaluatorFactory.getInstance();
-            scriptEvaluator = evaluatorFactory.getScriptEvaluatorByLanguageName( languageName );
-        }
-        catch ( ScriptException e ) {
-            throw new ConstraintDeclarationException( e );
-        }
+        HibernateValidatorFactory validatorFactory = (HibernateValidatorFactory) Validation.buildDefaultValidatorFactory();
+        ScriptEvaluatorFactory evaluatorFactory = validatorFactory.getScriptEvaluatorFactory();
+        scriptEvaluator = evaluatorFactory.getScriptEvaluatorByLanguageName( languageName );
 
-        try {
 //            evaluationResult = scriptEvaluator.evaluate(script, value, alias);
 //            Map<String, Object> map = StringUtils.objParseMap(value);
 //            map.put("alias",alias);
@@ -59,10 +54,6 @@ public class PropertyScriptAssertValidator implements ConstraintValidator<Proper
             Map<String, Object> bindings = new HashMap();
             bindings.put(alias, value);
             evaluationResult = scriptEvaluator.evaluate(script, bindings);
-        }
-        catch ( ScriptException e ) {
-            throw log.getErrorDuringScriptExecutionException( script, e );
-        }
 
         if ( evaluationResult == null ) {
             throw log.getScriptMustReturnTrueOrFalseException( script );

@@ -109,8 +109,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
         List<Resource> resources = Lists.newArrayList();
 
         // 配置文件中取
-        for (String permission : permissions.split("\n")) {
-            System.out.println(permission);
+        for (String permission : permissions.replace("\\n","@n").split("@n")) {
+            logger.info(permission);
             String[] str = permission.split("=");
             Resource resource = new Resource();
             resource.setPath(str[0].trim());
@@ -122,6 +122,8 @@ public class FilterInvocationSecurityMetadataSourceImpl extends PermissionsServi
                     role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY);
                 } else if (roleStr.trim().equals("USER")) {
                     role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_FULLY);
+                } else if (roleStr.trim().equals("REMEMBERED")) {
+                    role.setRoleCode(AuthenticatedVoter.IS_AUTHENTICATED_REMEMBERED);
                 } else {
                     role.setRoleCode("ROLE_" + roleStr.trim());
                 }

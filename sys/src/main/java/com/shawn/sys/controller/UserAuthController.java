@@ -1,6 +1,7 @@
 package com.shawn.sys.controller;
 
 import com.google.common.collect.Sets;
+import com.shawn.common.ComParams;
 import com.shawn.common.Response;
 import com.shawn.sys.entity.Role;
 import com.shawn.sys.entity.UserAuth;
@@ -11,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -42,6 +40,7 @@ public class UserAuthController {
             userAuthVo.setAuthPass(userAuth.getAuthPass());
             userAuthVo.setAuthType(userAuth.getAuthType());
             userAuthVo.setUserId(userAuth.getUser().getId().toString());
+            userAuthVo.setMobile(userAuth.getUser().getPhone());
             userAuthVo.setUserStatus(userAuth.getUser().getStatus());
             Set<RoleVO> roleVOs = Sets.newHashSet();
             for (Role role:userAuth.getUser().getRoles()) {
@@ -53,6 +52,13 @@ public class UserAuthController {
         }
 
         return Response.success(userAuthVo);
+    }
+
+
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @ResponseBody
+    public Response info(@RequestParam(value = ComParams.X_LOGINNAME) String loginName) throws Exception {
+        return Response.success(userAuthService.findByAuthId(loginName));
     }
 
 }
