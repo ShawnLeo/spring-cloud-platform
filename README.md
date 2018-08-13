@@ -5,4 +5,5 @@
 - gateway：based on Security、Zuul、Feign、Hystrix，Achieve the authentication, authorization
 - sys: System Management Service
 
-![image](https://github.com/ShawnLeo/spring-cloud-platform/tree/master/platform.jpg)
+## Architecture
+![image](https://github.com/ShawnLeo/spring-cloud-platform/blob/master/platform.jpg)
